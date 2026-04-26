@@ -21,13 +21,6 @@ export default function LoginPage() {
         style={{ objectFit: "cover", objectPosition: "center" }}
       />
 
-      <div
-        style={{
-          position: "absolute",
-          inset: 0,
-          background: "rgba(255, 255, 255, 0.28)",
-        }}
-      />
 
       <section
         style={{
@@ -52,10 +45,10 @@ export default function LoginPage() {
             style={{
               margin: 0,
               textAlign: "center",
-              color: "#7fbf00",
+              color: "#8ec605",
               fontSize: "clamp(2rem, 4vw, 3.3rem)",
               lineHeight: 1.08,
-              fontWeight: 800,
+              fontWeight: 600,
             }}
           >
             Bem-vindo a Innovation Brindes
@@ -63,9 +56,9 @@ export default function LoginPage() {
 
           <div
             style={{
-              width: "min(100%, 960px)",
+              width: "min(100%, 760px)",
               borderRadius: "16px",
-              background: "#82c300",
+              background: "#8ec605",
               padding: "3rem 1.5rem",
               boxShadow: "0 24px 50px rgba(79, 117, 7, 0.22)",
               display: "grid",

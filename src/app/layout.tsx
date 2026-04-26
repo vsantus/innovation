@@ -1,11 +1,13 @@
 import type { Metadata } from "next";
+
+import favicon from "@/assets/faviconbrind.png";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Innovation - Login",
+  title: "Innovation Brindes",
   description: "Painel Innovation Brindes",
   icons: {
-    icon: "/icon.svg",
+    icon: favicon.src,
   },
 };
 

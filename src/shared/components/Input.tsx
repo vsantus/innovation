@@ -1,14 +1,15 @@
 "use client";
 
 import { forwardRef } from "react";
-import type { InputHTMLAttributes } from "react";
+import type { CSSProperties, InputHTMLAttributes, ReactNode } from "react";
 
 type InputProps = InputHTMLAttributes<HTMLInputElement> & {
   error?: string;
   label?: string;
+  leftIcon?: ReactNode;
 };
 
-const baseStyle = {
+const baseStyle: CSSProperties = {
   width: "100%",
   borderRadius: "14px",
   border: "1px solid var(--border)",
@@ -19,7 +20,7 @@ const baseStyle = {
 };
 
 export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
-  { error, label, id, style, ...props },
+  { error, label, id, leftIcon, style, ...props },
   ref,
 ) {
   return (
@@ -29,16 +30,42 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
           {label}
         </span>
       ) : null}
-      <input
-        ref={ref}
-        id={id}
-        style={{
-          ...baseStyle,
-          borderColor: error ? "var(--danger)" : "var(--border)",
-          ...style,
-        }}
-        {...props}
-      />
+      <span style={{ position: "relative", display: "block" }}>
+        {leftIcon ? (
+          <span
+            aria-hidden="true"
+            style={{
+              position: "absolute",
+              left: "3.4rem",
+              top: "50%",
+              transform: "translateY(-50%)",
+              color: "#676767",
+              width: "1.35rem",
+              height: "1.35rem",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              fontSize: "1.35rem",
+              lineHeight: 1,
+              pointerEvents: "none",
+              zIndex: 1,
+            }}
+          >
+            {leftIcon}
+          </span>
+        ) : null}
+        <input
+          ref={ref}
+          id={id}
+          style={{
+            ...baseStyle,
+            borderColor: error ? "var(--danger)" : "var(--border)",
+            ...style,
+            ...(leftIcon ? { paddingLeft: "5.9rem" } : {}),
+          }}
+          {...props}
+        />
+      </span>
       {error ? (
         <span style={{ fontSize: "0.85rem", color: "var(--danger)" }}>{error}</span>
       ) : null}
