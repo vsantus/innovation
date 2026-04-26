@@ -93,7 +93,7 @@ export function ProductCard({ product, isFavorite, onToggleFavorite, onViewDetai
         <div className={styles.body}>
           <p className={styles.description}>{product.descricao || product.nome}</p>
 
-          <div className={styles.colorGroup} aria-label="Cores disponiveis">
+          <div className={styles.colorGroup} aria-label="Cores disponíveis">
             <span className={styles.colorLabel}>Cores:</span>
             <div className={styles.colorSwatches}>
               {colorOptions.map((color) => (

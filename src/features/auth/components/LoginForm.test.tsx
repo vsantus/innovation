@@ -30,14 +30,14 @@ describe("LoginForm", () => {
     loginMock.state.error = null;
   });
 
-  it("mostra erros quando usuario e senha nao sao preenchidos", async () => {
+  it("mostra erros quando usuário e senha não são preenchidos", async () => {
     const user = userEvent.setup();
 
     render(<LoginForm />);
 
     await user.click(screen.getByRole("button", { name: /login/i }));
 
-    expect(screen.getByText("Informe seu usuario.")).toBeInTheDocument();
+    expect(screen.getByText("Informe seu usuário.")).toBeInTheDocument();
     expect(screen.getByText("Informe sua senha.")).toBeInTheDocument();
     expect(loginMock.handleLogin).not.toHaveBeenCalled();
   });
@@ -47,7 +47,7 @@ describe("LoginForm", () => {
 
     render(<LoginForm />);
 
-    await user.type(screen.getByPlaceholderText("Usuario"), " dinamica ");
+    await user.type(screen.getByPlaceholderText("Usuário"), " dinamica ");
     await user.type(screen.getByPlaceholderText("Senha"), "123");
     await user.click(screen.getByLabelText("Manter logado"));
     await user.click(screen.getByRole("button", { name: /login/i }));

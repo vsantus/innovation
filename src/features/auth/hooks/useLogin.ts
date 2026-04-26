@@ -20,7 +20,7 @@ export function useLogin() {
       router.push("/produtos");
       router.refresh();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Nao foi possivel entrar. Tente novamente.");
+      setError(err instanceof Error ? err.message : "Não foi possível entrar. Tente novamente.");
     } finally {
       setIsLoading(false);
     }

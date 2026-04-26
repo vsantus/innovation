@@ -12,11 +12,11 @@ const product: Product = {
   codigo_categoria: "1018109",
   imagem: "https://imgprodutos.s3.us-east-2.amazonaws.com/2651/chaveiro-metal-com-nylon-1-1.jpg",
   preco: "0.0",
-  descricao: "Chaveiro de metal com detalhe colorido em nylon. Metal liso e espelhado de ambos lados.",
+  descricao: "Chaveiro de metal com detalhe colorido em nylon. Metal liso e espelhado em ambos os lados.",
 };
 
 describe("ProductCard", () => {
-  it("renderiza as principais informacoes do produto", () => {
+  it("renderiza as principais informações do produto", () => {
     render(
       <ProductCard
         product={product}

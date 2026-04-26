@@ -48,7 +48,7 @@ export function useProducts() {
         }
       } catch (err) {
         if (isCurrent) {
-          setError(err instanceof Error ? err.message : "Nao foi possivel carregar os produtos.");
+          setError(err instanceof Error ? err.message : "Não foi possível carregar os produtos.");
           setProducts([]);
         }
       } finally {

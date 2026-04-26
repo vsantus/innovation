@@ -107,7 +107,7 @@ export function ProductModal({ product, isOpen, onClose }: ProductModalProps) {
       >
         <header className={styles.header}>
           <div>
-            <span className={styles.eyebrow}>Detalhe rapido</span>
+            <span className={styles.eyebrow}>Detalhe rápido</span>
             <h2 id={titleId} className={styles.title}>
               {product.nome}
             </h2>
@@ -129,11 +129,11 @@ export function ProductModal({ product, isOpen, onClose }: ProductModalProps) {
 
             <div className={styles.metaGrid}>
               <div className={styles.metaItem}>
-                <span className={styles.metaLabel}>Codigo</span>
+                <span className={styles.metaLabel}>Código</span>
                 <strong className={styles.metaValue}>{product.codigo}</strong>
               </div>
               <div className={styles.metaItem}>
-                <span className={styles.metaLabel}>Referencia</span>
+                <span className={styles.metaLabel}>Referência</span>
                 <strong className={styles.metaValue}>{product.referencia}</strong>
               </div>
               <div className={styles.metaItem}>
@@ -141,7 +141,7 @@ export function ProductModal({ product, isOpen, onClose }: ProductModalProps) {
                 <strong className={styles.metaValue}>{product.codigo_categoria}</strong>
               </div>
               <div className={styles.metaItem}>
-                <span className={styles.metaLabel}>Preco</span>
+                <span className={styles.metaLabel}>Preço</span>
                 <strong className={styles.price}>{formatCurrency(product.preco)}</strong>
               </div>
             </div>

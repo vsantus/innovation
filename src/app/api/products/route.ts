@@ -48,7 +48,7 @@ async function requestProducts(token: string, search = "") {
   });
 
   if (!response.ok) {
-    throw new Error("Nao foi possivel carregar os produtos.");
+    throw new Error("Não foi possível carregar os produtos.");
   }
 
   return normalizeProducts((await response.json()) as ProductsApiPayload);
@@ -59,7 +59,7 @@ export async function GET() {
     const token = getAuthToken();
 
     if (!token) {
-      return NextResponse.json({ message: "Sessao expirada." }, { status: 401 });
+      return NextResponse.json({ message: "Sessão expirada." }, { status: 401 });
     }
 
     const products = await requestProducts(token);
@@ -77,7 +77,7 @@ export async function POST(request: Request) {
     const token = getAuthToken();
 
     if (!token) {
-      return NextResponse.json({ message: "Sessao expirada." }, { status: 401 });
+      return NextResponse.json({ message: "Sessão expirada." }, { status: 401 });
     }
 
     const body = (await request.json()) as { search?: string };

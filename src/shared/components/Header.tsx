@@ -85,7 +85,7 @@ export function Header({ userName, userGroup, favoritesCount = 0, onFavoritesCli
           />
         </div>
 
-        <nav className={styles.actions} aria-label="Atalhos do usuario">
+        <nav className={styles.actions} aria-label="Atalhos do usuário">
           <button
             className={styles.favoriteButton}
             type="button"
@@ -123,16 +123,16 @@ export function Header({ userName, userGroup, favoritesCount = 0, onFavoritesCli
                 <button
                   className={styles.avatarButton}
                   type="button"
-                  aria-label="Abrir opcoes do usuario"
+                  aria-label="Abrir opções do usuário"
                   aria-expanded={isUserMenuOpen}
-                  title="Opcoes do usuario"
+                  title="Opções do usuário"
                   onClick={() => setIsUserMenuOpen((current) => !current)}
                 >
                   <FontAwesomeIcon className="h-7 w-7" icon={faUser} />
                 </button>
               </div>
               <div>
-                <strong className={styles.userName}>{userName || "Usuario Innovation"}</strong>
+                <strong className={styles.userName}>{userName || "Usuário Innovation"}</strong>
                 <span className={styles.userGroup}>{userGroup || "Conta ativa"}</span>
               </div>
             </div>
@@ -160,7 +160,7 @@ export function Header({ userName, userGroup, favoritesCount = 0, onFavoritesCli
             <h2 id="logout-confirm-title" className={styles.confirmTitle}>
               Deseja mesmo sair?
             </h2>
-            <p className={styles.confirmText}>Sua sessao sera encerrada neste dispositivo.</p>
+            <p className={styles.confirmText}>Sua sessão será encerrada neste dispositivo.</p>
             <div className={styles.confirmActions}>
               <button className={styles.cancelButton} type="button" onClick={() => setIsLogoutConfirmOpen(false)}>
                 Cancelar

@@ -26,7 +26,7 @@ export async function POST(request: Request) {
       return NextResponse.json(
         {
           status: 0,
-          message: data.message || "Email ou senha invalidos. Confira os dados e tente novamente.",
+          message: data.message || "E-mail ou senha inválidos. Confira os dados e tente novamente.",
         },
         { status: response.ok ? 401 : response.status },
       );
@@ -63,7 +63,7 @@ export async function POST(request: Request) {
     return NextResponse.json(
       {
         status: 0,
-        message: "Nao foi possivel fazer login agora. Tente novamente em instantes.",
+        message: "Não foi possível fazer login agora. Tente novamente em instantes.",
       },
       { status: 500 },
     );

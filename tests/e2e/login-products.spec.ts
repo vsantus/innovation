@@ -7,10 +7,10 @@ const productMock = {
   codigo_categoria: "1018109",
   imagem: "https://imgprodutos.s3.us-east-2.amazonaws.com/2651/chaveiro-metal-com-nylon-1-1.jpg",
   preco: "0.0",
-  descricao: "Chaveiro de metal com detalhe colorido em nylon. Metal liso e espelhado de ambos lados.",
+  descricao: "Chaveiro de metal com detalhe colorido em nylon. Metal liso e espelhado em ambos os lados.",
 };
 
-test("login com usuario valido exibe o grid de produtos", async ({ page }) => {
+test("login com usuário válido exibe o grid de produtos", async ({ page }) => {
   await page.route("**/api/auth/login", async (route) => {
     const request = route.request();
     const payload = (await request.postDataJSON()) as { email?: string; senha?: string };
@@ -21,7 +21,7 @@ test("login com usuario valido exibe o grid de produtos", async ({ page }) => {
         contentType: "application/json",
         body: JSON.stringify({
           status: 0,
-          message: "Email ou senha invalidos.",
+          message: "E-mail ou senha inválidos.",
         }),
       });
       return;
@@ -53,7 +53,7 @@ test("login com usuario valido exibe o grid de produtos", async ({ page }) => {
   });
 
   await page.goto("/login");
-  await page.getByPlaceholder("Usuario").fill("dinamica");
+  await page.getByPlaceholder("Usuário").fill("dinamica");
   await page.getByPlaceholder("Senha").fill("123");
   await page.getByRole("button", { name: "Login" }).click();
 

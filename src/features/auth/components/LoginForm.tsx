@@ -38,7 +38,7 @@ export function LoginForm() {
     const nextErrors: { email?: string; senha?: string } = {};
 
     if (!email.trim()) {
-      nextErrors.email = "Informe seu usuario.";
+      nextErrors.email = "Informe seu usuário.";
     }
 
     if (!senha.trim()) {
@@ -72,7 +72,7 @@ export function LoginForm() {
         autoCapitalize="none"
         autoCorrect="off"
         autoComplete="username"
-        placeholder="Usuario"
+        placeholder="Usuário"
         value={email}
         error={fieldErrors.email}
         style={fieldStyle}

@@ -51,7 +51,7 @@ export default function LoginPage() {
               fontWeight: 600,
             }}
           >
-            Bem-vindo a Innovation Brindes
+            Bem-vindo à Innovation Brindes
           </h1>
 
           <div

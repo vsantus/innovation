@@ -13,7 +13,7 @@ export async function getProducts(search = "") {
   const data = await response.json();
 
   if (!response.ok) {
-    throw new Error(data.message || "Nao foi possivel carregar os produtos.");
+    throw new Error(data.message || "Não foi possível carregar os produtos.");
   }
 
   return data as Product[];

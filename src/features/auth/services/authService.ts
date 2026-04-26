@@ -12,7 +12,7 @@ export async function login(payload: LoginRequest) {
   const data = (await response.json()) as LoginApiResponse;
 
   if (!response.ok || data.status === 0) {
-    throw new Error(data.message || "Email ou senha invalidos.");
+    throw new Error(data.message || "E-mail ou senha inválidos.");
   }
 
   return data;

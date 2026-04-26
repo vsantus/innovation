@@ -138,7 +138,7 @@ export function ProductList({ userName, userGroup }: ProductListProps) {
         <div>
           <h1 className={styles.title}>Produtos</h1>
           <p className={styles.summary}>
-            {showFavoritesOnly ? "Exibindo favoritos desta pagina." : `${totalProducts} produtos encontrados.`}
+            {showFavoritesOnly ? "Exibindo favoritos desta página." : `${totalProducts} produtos encontrados.`}
           </p>
         </div>
 
@@ -148,7 +148,7 @@ export function ProductList({ userName, userGroup }: ProductListProps) {
             <input
               className={styles.searchInput}
               type="search"
-              placeholder="Nome, codigo ou referencia"
+              placeholder="Nome, código ou referência"
               value={search}
               onChange={(event) => setSearch(event.target.value)}
             />
@@ -163,8 +163,8 @@ export function ProductList({ userName, userGroup }: ProductListProps) {
             >
               <option value="name-asc">Nome A-Z</option>
               <option value="name-desc">Nome Z-A</option>
-              <option value="price-asc">Menor preco</option>
-              <option value="price-desc">Maior preco</option>
+              <option value="price-asc">Menor preço</option>
+              <option value="price-desc">Maior preço</option>
             </select>
           </label>
         </div>
@@ -217,13 +217,13 @@ export function ProductList({ userName, userGroup }: ProductListProps) {
             ))}
           </section>
 
-          <nav className={styles.pagination} aria-label="Paginacao de produtos">
+          <nav className={styles.pagination} aria-label="Paginação de produtos">
             {pageNumbers.map((pageNumber) => (
               <button
                 key={pageNumber}
                 type="button"
                 className={`${styles.pageButton} ${pageNumber === page ? styles.pageButtonActive : styles.pageButtonIdle}`}
-                aria-label={`Ir para pagina ${pageNumber}`}
+                aria-label={`Ir para página ${pageNumber}`}
                 aria-current={pageNumber === page ? "page" : undefined}
                 onClick={() => setPage(pageNumber)}
               >
