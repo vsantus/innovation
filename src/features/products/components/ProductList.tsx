@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
 
 import { ProductCard } from "@/features/products/components/ProductCard";
 import { ProductModal } from "@/features/products/components/ProductModal";
@@ -42,6 +43,7 @@ const styles = {
 };
 
 export function ProductList({ userName, userGroup }: ProductListProps) {
+  const router = useRouter();
   const {
     products,
     totalProducts,
@@ -113,6 +115,15 @@ export function ProductList({ userName, userGroup }: ProductListProps) {
     });
   }
 
+  async function handleLogout() {
+    await fetch("/api/auth/logout", {
+      method: "POST",
+    });
+
+    router.replace("/login");
+    router.refresh();
+  }
+
   return (
     <main className={styles.page}>
       <Header
@@ -120,6 +131,7 @@ export function ProductList({ userName, userGroup }: ProductListProps) {
         userGroup={userGroup}
         favoritesCount={favoriteCodes.length}
         onFavoritesClick={() => setShowFavoritesOnly((current) => !current)}
+        onUserClick={handleLogout}
       />
 
       <section className={styles.toolbar} aria-label="Filtros de produtos">
