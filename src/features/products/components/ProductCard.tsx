@@ -2,6 +2,7 @@
 
 import { faBoxOpen, faStar } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Image from "next/image";
 import { memo } from "react";
 
 import type { Product } from "@/features/products/types";
@@ -76,7 +77,14 @@ function ProductCardComponent({ product, isFavorite, onToggleFavorite, onViewDet
           >
             <FontAwesomeIcon icon={faStar} />
           </button>
-          <img className={styles.image} src={product.imagem} alt={product.nome} loading="lazy" />
+          <Image
+            className={styles.image}
+            src={product.imagem}
+            alt={product.nome}
+            width={234}
+            height={232}
+            sizes="(max-width: 460px) 100vw, 234px"
+          />
         </div>
 
         <div className={styles.packageArea}>

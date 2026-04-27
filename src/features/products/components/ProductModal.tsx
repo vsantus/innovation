@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useEffect, useId, useRef } from "react";
 
 import type { Product } from "@/features/products/types";
@@ -119,7 +120,14 @@ export function ProductModal({ product, isOpen, onClose }: ProductModalProps) {
 
         <div className={styles.body}>
           <div className={styles.imageWrap}>
-            <img className={styles.image} src={product.imagem} alt={product.nome} />
+            <Image
+              className={styles.image}
+              src={product.imagem}
+              alt={product.nome}
+              width={240}
+              height={220}
+              sizes="(max-width: 768px) 100vw, 240px"
+            />
           </div>
 
           <section className={styles.info}>

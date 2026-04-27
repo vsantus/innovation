@@ -6,6 +6,13 @@ import type { Product } from "@/features/products/types";
 
 type ProductsApiPayload = Product[] | { produtos?: Product[]; data?: Product[]; dados?: Product[] };
 
+class ProductsUnauthorizedError extends Error {
+  constructor(message = "Sessao expirada.") {
+    super(message);
+    this.name = "ProductsUnauthorizedError";
+  }
+}
+
 function normalizeProducts(payload: ProductsApiPayload): Product[] {
   if (Array.isArray(payload)) {
     return payload;
@@ -52,8 +59,12 @@ async function requestProducts(token: string, search = "") {
     cache: "no-store",
   });
 
+  if (response.status === 401) {
+    throw new ProductsUnauthorizedError();
+  }
+
   if (!response.ok) {
-    throw new Error("Não foi possível carregar os produtos.");
+    throw new Error("Nao foi possivel carregar os produtos.");
   }
 
   return normalizeProducts((await response.json()) as ProductsApiPayload);
@@ -64,12 +75,16 @@ export async function GET() {
     const token = getAuthToken();
 
     if (!token) {
-      return NextResponse.json({ message: "Sessão expirada." }, { status: 401 });
+      return NextResponse.json({ message: "Sessao expirada." }, { status: 401 });
     }
 
     const products = await requestProducts(token);
     return NextResponse.json(products);
   } catch (error) {
+    if (error instanceof ProductsUnauthorizedError) {
+      return NextResponse.json({ message: error.message }, { status: 401 });
+    }
+
     return NextResponse.json(
       { message: error instanceof Error ? error.message : "Erro ao carregar produtos." },
       { status: 500 },
@@ -82,7 +97,7 @@ export async function POST(request: Request) {
     const token = getAuthToken();
 
     if (!token) {
-      return NextResponse.json({ message: "Sessão expirada." }, { status: 401 });
+      return NextResponse.json({ message: "Sessao expirada." }, { status: 401 });
     }
 
     const body = (await request.json()) as { search?: string };
@@ -98,11 +113,19 @@ export async function POST(request: Request) {
       }
 
       return NextResponse.json(filteredProducts);
-    } catch {
+    } catch (error) {
+      if (error instanceof ProductsUnauthorizedError) {
+        throw error;
+      }
+
       const products = await requestProducts(token);
       return NextResponse.json(filterProducts(products, search));
     }
   } catch (error) {
+    if (error instanceof ProductsUnauthorizedError) {
+      return NextResponse.json({ message: error.message }, { status: 401 });
+    }
+
     return NextResponse.json(
       { message: error instanceof Error ? error.message : "Erro ao filtrar produtos." },
       { status: 500 },

@@ -29,7 +29,10 @@ describe("ProductCard", () => {
     expect(screen.getByRole("heading", { name: product.nome })).toBeInTheDocument();
     expect(screen.getByText(product.codigo)).toBeInTheDocument();
     expect(screen.getByText("R$ 0,00")).toBeInTheDocument();
-    expect(screen.getByRole("img", { name: product.nome })).toHaveAttribute("src", product.imagem);
+    expect(screen.getByRole("img", { name: product.nome })).toHaveAttribute(
+      "src",
+      expect.stringContaining(encodeURIComponent(product.imagem)),
+    );
   });
 
   it("dispara favoritos e abertura de detalhes", async () => {

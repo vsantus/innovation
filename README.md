@@ -1,36 +1,108 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Innovation Brindes - Teste Front-end
 
-## Getting Started
+Mini-aplicacao em Next.js para login e listagem de produtos da Innovation Brindes.
 
-First, run the development server:
+## Rodar Localmente
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Acesse `http://localhost:3000`.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Credenciais de teste:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```text
+usuario: dinamica
+senha: 123
+```
 
-## Learn More
+## Rodar Com Docker
 
-To learn more about Next.js, take a look at the following resources:
+Pre-requisito: Docker Desktop aberto e rodando.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Na raiz do projeto, crie a imagem:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```bash
+docker build -t teste-innovation .
+```
 
-## Deploy on Vercel
+Rode o container:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```bash
+docker run --rm -p 3000:3000 teste-innovation
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Acesse `http://localhost:3000`.
+
+Credenciais:
+
+```text
+usuario: dinamica
+senha: 123
+```
+
+Se a porta 3000 ja estiver ocupada, use uma porta local alternativa:
+
+```bash
+docker run --rm -p 3001:3000 teste-innovation
+```
+
+Nesse caso, acesse `http://localhost:3001`.
+
+Para ambientes HTTPS, habilite cookies seguros:
+
+```bash
+docker run --rm -p 3000:3000 -e COOKIE_SECURE=true teste-innovation
+```
+
+## Scripts
+
+```bash
+npm run dev       # ambiente de desenvolvimento
+npm run build     # build de producao
+npm run start     # servidor Next.js de producao
+npm run lint      # lint
+npm run test:run  # testes unitarios
+npm run test:e2e  # smoke E2E com Playwright
+```
+
+## Decisoes Tecnicas
+
+- Next.js App Router com TypeScript.
+- Rotas internas em `/api/auth/login`, `/api/auth/logout` e `/api/products` para proteger o token no servidor.
+- Token salvo em cookie HTTP-only.
+- Middleware protege `/produtos` e redireciona usuarios autenticados que tentam voltar para `/login`.
+- React Query gerencia cache, revalidacao, loading, erro e retry da listagem.
+- Zustand persiste favoritos em `localStorage`.
+- Busca com debounce de 400 ms.
+- Carregamento progressivo local em lotes de 5 itens, pois a API retorna a lista completa e nao expoe paginacao remota.
+- Docker multi-stage com `output: "standalone"` para imagem menor de producao.
+
+## Funcionalidades
+
+- Login com mensagem amigavel de erro.
+- Guarda de rota para `/produtos`.
+- Grid responsivo de produtos.
+- Busca por nome/codigo/referencia.
+- Ordenacao por nome e preco.
+- Favoritos persistidos localmente.
+- Filtro para mostrar apenas favoritos.
+- Modal acessivel com `aria-*`, foco preso e fechamento por `Esc`.
+- Skeleton na primeira carga, loading incremental e acao de retry.
+- 401 na listagem forca logout e redireciona para `/login`.
+
+## Pendencias E Melhorias Futuras
+
+- Melhorar a performance medida pelo Lighthouse. Durante os testes, os melhores resultados obtidos foram:
+  - `/login`: 78 em Performance e 96 em Acessibilidade.
+  - `/produtos`: 85 em Performance e 96 em Acessibilidade.
+
+## Evidencias
+
+- Docker build validado com sucesso.
+- Docker run validado com sucesso em `http://localhost:3000/login`.
+- Lighthouse login: [`src/assets/lighthouse/login.jpeg`](src/assets/lighthouse/login.jpeg).
+- Lighthouse produtos: [`src/assets/lighthouse/produtos.png`](src/assets/lighthouse/produtos.png).
+- Video do fluxo login -> produtos: [`src/assets/fluxo/fluxo.mp4`](src/assets/fluxo/fluxo.mp4).
