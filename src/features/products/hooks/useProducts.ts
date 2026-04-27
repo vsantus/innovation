@@ -1,10 +1,13 @@
 "use client";
 
+import { useQuery } from "@tanstack/react-query";
 import { useEffect, useMemo, useState } from "react";
 
-import { getProducts } from "@/features/products/services/productService";
+import { getProducts, UnauthorizedError } from "@/features/products/services/productService";
 import type { Product, ProductSort } from "@/features/products/types";
 import { useDebounce } from "@/shared/hooks/useDebounce";
+
+const INITIAL_VISIBLE_PRODUCTS = 5;
 
 function sortProducts(products: Product[], sort: ProductSort) {
   return [...products].sort((first, second) => {
@@ -24,53 +27,26 @@ function sortProducts(products: Product[], sort: ProductSort) {
 }
 
 export function useProducts() {
-  const [products, setProducts] = useState<Product[]>([]);
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState<ProductSort>("name-asc");
-  const [page, setPage] = useState(1);
-  const [isLoading, setIsLoading] = useState(true);
-  const [isFetching, setIsFetching] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [visibleCount, setVisibleCount] = useState(INITIAL_VISIBLE_PRODUCTS);
   const debouncedSearch = useDebounce(search, 400);
 
-  useEffect(() => {
-    let isCurrent = true;
-
-    async function loadProducts() {
-      setError(null);
-      setIsFetching(true);
-
-      try {
-        const nextProducts = await getProducts(debouncedSearch);
-
-        if (isCurrent) {
-          setProducts(nextProducts);
-        }
-      } catch (err) {
-        if (isCurrent) {
-          setError(err instanceof Error ? err.message : "Não foi possível carregar os produtos.");
-          setProducts([]);
-        }
-      } finally {
-        if (isCurrent) {
-          setIsLoading(false);
-          setIsFetching(false);
-        }
-      }
-    }
-
-    loadProducts();
-
-    return () => {
-      isCurrent = false;
-    };
-  }, [debouncedSearch]);
+  const productsQuery = useQuery({
+    queryKey: ["products", debouncedSearch],
+    queryFn: () => getProducts(debouncedSearch),
+    retry: (failureCount, error) => !(error instanceof UnauthorizedError) && failureCount < 1,
+  });
 
   useEffect(() => {
-    setPage(1);
+    setVisibleCount(INITIAL_VISIBLE_PRODUCTS);
   }, [debouncedSearch, sort]);
 
-  const sortedProducts = useMemo(() => sortProducts(products, sort), [products, sort]);
+  const sortedProducts = useMemo(
+    () => sortProducts(productsQuery.data ?? [], sort),
+    [productsQuery.data, sort],
+  );
+
   return {
     products: sortedProducts,
     totalProducts: sortedProducts.length,
@@ -78,10 +54,11 @@ export function useProducts() {
     setSearch,
     sort,
     setSort,
-    page,
-    setPage,
-    isLoading,
-    isFetching,
-    error,
+    visibleCount,
+    setVisibleCount,
+    isLoading: productsQuery.isLoading,
+    isFetching: productsQuery.isFetching,
+    error: productsQuery.error,
+    refetch: productsQuery.refetch,
   };
 }

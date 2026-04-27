@@ -5,3 +5,5 @@ export const AUTH_ENDPOINT =
   "https://apihomolog.innovationbrindes.com.br/api/innova-dinamica/login/acessar";
 
 export const AUTH_COOKIE_MAX_AGE = 60 * 60 * 24 * 30;
+
+export const AUTH_COOKIE_SECURE = process.env.COOKIE_SECURE === "true";

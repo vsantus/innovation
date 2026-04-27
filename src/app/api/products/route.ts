@@ -30,6 +30,16 @@ function filterProducts(products: Product[], search: string) {
   });
 }
 
+function buildSearchPayload(search: string) {
+  const term = search.trim();
+  const isCodeSearch = /^\d+$/.test(term);
+
+  return {
+    nome_produto: isCodeSearch ? "" : term,
+    codigo_produto: isCodeSearch ? term : "",
+  };
+}
+
 async function requestProducts(token: string, search = "") {
   const hasSearch = search.trim().length > 0;
   const response = await fetch(PRODUCTS_ENDPOINT, {
@@ -38,12 +48,7 @@ async function requestProducts(token: string, search = "") {
       "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,
     },
-    body: hasSearch
-      ? JSON.stringify({
-          nome: search,
-          codigo: search,
-        })
-      : undefined,
+    body: hasSearch ? JSON.stringify(buildSearchPayload(search)) : undefined,
     cache: "no-store",
   });
 
@@ -85,7 +90,14 @@ export async function POST(request: Request) {
 
     try {
       const products = await requestProducts(token, search);
-      return NextResponse.json(filterProducts(products, search));
+      const filteredProducts = filterProducts(products, search);
+
+      if (search.trim() && filteredProducts.length === 0) {
+        const allProducts = await requestProducts(token);
+        return NextResponse.json(filterProducts(allProducts, search));
+      }
+
+      return NextResponse.json(filteredProducts);
     } catch {
       const products = await requestProducts(token);
       return NextResponse.json(filterProducts(products, search));

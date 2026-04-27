@@ -1,6 +1,12 @@
 import { NextResponse } from "next/server";
 
-import { AUTH_COOKIE_MAX_AGE, AUTH_COOKIE_NAME, AUTH_ENDPOINT, AUTH_USER_COOKIE_NAME } from "@/lib/auth";
+import {
+  AUTH_COOKIE_MAX_AGE,
+  AUTH_COOKIE_NAME,
+  AUTH_COOKIE_SECURE,
+  AUTH_ENDPOINT,
+  AUTH_USER_COOKIE_NAME,
+} from "@/lib/auth";
 import type { LoginRequest, LoginResponse } from "@/features/auth/types";
 
 export async function POST(request: Request) {
@@ -43,7 +49,7 @@ export async function POST(request: Request) {
       value: data.token_de_acesso,
       httpOnly: true,
       sameSite: "lax",
-      secure: process.env.NODE_ENV === "production",
+      secure: AUTH_COOKIE_SECURE,
       path: "/",
       ...(body.manterLogado ? { maxAge: AUTH_COOKIE_MAX_AGE } : {}),
     });
@@ -53,7 +59,7 @@ export async function POST(request: Request) {
       value: encodeURIComponent(JSON.stringify(data.dados_usuario)),
       httpOnly: true,
       sameSite: "lax",
-      secure: process.env.NODE_ENV === "production",
+      secure: AUTH_COOKIE_SECURE,
       path: "/",
       ...(body.manterLogado ? { maxAge: AUTH_COOKIE_MAX_AGE } : {}),
     });

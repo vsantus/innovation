@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { faEnvelope, faPhone, faStar, faUser } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Image from "next/image";
 
 type HeaderProps = {
   userName?: string;
@@ -76,12 +77,13 @@ export function Header({ userName, userGroup, favoritesCount = 0, onFavoritesCli
     <header className={styles.header}>
       <div className={styles.inner}>
         <div className={styles.brand}>
-          <img
+          <Image
             className={styles.logo}
-            src="/bannerinnovation.png"
+            src="/logobanner.avif"
             alt="Logo da Innovation"
-            width={281}
-            height={127}
+            width={210}
+            height={56}
+            priority
           />
         </div>
 

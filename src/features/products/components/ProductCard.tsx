@@ -2,7 +2,7 @@
 
 import { faBoxOpen, faStar } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useState } from "react";
+import { memo } from "react";
 
 import type { Product } from "@/features/products/types";
 import { formatCurrency } from "@/shared/utils/formatCurrency";
@@ -48,9 +48,7 @@ const styles = {
   colorGroup: "grid content-start gap-1",
   colorLabel: "text-xs font-extrabold text-product-label",
   colorSwatches: "flex max-w-28 flex-wrap gap-1",
-  colorSwatch:
-    "h-[13px] w-[13px] rounded-full border border-transparent transition duration-150 hover:scale-110 focus:outline-none focus:ring-2 focus:ring-brand-green focus:ring-offset-1",
-  colorSwatchSelected: "scale-110 ring-2 ring-brand-green ring-offset-1",
+  colorSwatch: "h-[13px] w-[13px] rounded-full border border-product-divider",
   priceBlock: "grid self-end justify-items-end gap-px text-right",
   priceLabel: "text-[0.7rem] text-product-titleCode",
   price: "text-xl leading-none text-product-price",
@@ -58,9 +56,7 @@ const styles = {
   cta: "h-10 cursor-pointer border-0 bg-brand-green text-sm font-black text-white",
 };
 
-export function ProductCard({ product, isFavorite, onToggleFavorite, onViewDetails }: ProductCardProps) {
-  const [selectedColor, setSelectedColor] = useState(colorOptions[0]);
-
+function ProductCardComponent({ product, isFavorite, onToggleFavorite, onViewDetails }: ProductCardProps) {
   return (
     <article className={styles.shell}>
       <div className={styles.heading}>
@@ -97,14 +93,11 @@ export function ProductCard({ product, isFavorite, onToggleFavorite, onViewDetai
             <span className={styles.colorLabel}>Cores:</span>
             <div className={styles.colorSwatches}>
               {colorOptions.map((color) => (
-                <button
+                <span
                   key={color}
-                  className={`${styles.colorSwatch} ${selectedColor === color ? styles.colorSwatchSelected : ""}`}
-                  type="button"
-                  aria-label={`Selecionar cor ${color}`}
-                  aria-pressed={selectedColor === color}
+                  className={styles.colorSwatch}
                   style={{ backgroundColor: color }}
-                  onClick={() => setSelectedColor(color)}
+                  aria-hidden="true"
                 />
               ))}
             </div>
@@ -124,3 +117,5 @@ export function ProductCard({ product, isFavorite, onToggleFavorite, onViewDetai
     </article>
   );
 }
+
+export const ProductCard = memo(ProductCardComponent);

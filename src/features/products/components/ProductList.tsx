@@ -1,22 +1,28 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
+import dynamic from "next/dynamic";
 
 import { ProductCard } from "@/features/products/components/ProductCard";
-import { ProductModal } from "@/features/products/components/ProductModal";
 import { ProductSkeleton } from "@/features/products/components/ProductSkeleton";
 import { useProducts } from "@/features/products/hooks/useProducts";
+import { UnauthorizedError } from "@/features/products/services/productService";
 import type { Product, ProductSort } from "@/features/products/types";
 import { Header } from "@/shared/components/Header";
+import { useFavoritesStore } from "@/store/favoritesStore";
 
 type ProductListProps = {
   userName?: string;
   userGroup?: string;
 };
 
-const FAVORITES_STORAGE_KEY = "innovation_favorite_products";
-const PAGE_SIZE = 10;
+const PAGE_SIZE = 5;
+
+const ProductModal = dynamic(
+  () => import("@/features/products/components/ProductModal").then((mod) => mod.ProductModal),
+  { ssr: false },
+);
 
 const styles = {
   page: "min-h-screen bg-white pb-12 text-product-text",
@@ -36,10 +42,9 @@ const styles = {
   state: "mx-auto my-8 w-[min(100%-2rem,720px)] rounded-lg border border-product-control bg-white p-5 text-center text-product-muted",
   errorState: "mx-auto my-8 w-[min(100%-2rem,720px)] rounded-lg border border-red-300 bg-white p-5 text-center text-red-700",
   grid: "mx-auto grid w-full max-w-[1260px] grid-cols-5 items-start gap-x-6 gap-y-8 px-4 pb-8 pt-3 max-[1180px]:grid-cols-4 max-[960px]:grid-cols-3 max-[760px]:grid-cols-2 max-[460px]:grid-cols-1 md:px-8",
-  pagination: "mx-auto flex w-full max-w-[1160px] flex-wrap items-center justify-center gap-2 px-4 text-center font-bold text-product-muted md:px-8",
-  pageButton: "grid h-10 w-10 cursor-pointer place-items-center rounded-xl border text-base font-extrabold",
-  pageButtonActive: "border-product-control bg-product-panel text-[#111111] shadow-product",
-  pageButtonIdle: "border-transparent bg-transparent text-product-text hover:border-product-control hover:bg-product-panel",
+  errorButton: "mt-4 min-h-10 cursor-pointer rounded-lg border-0 bg-brand-green px-5 font-extrabold text-white disabled:cursor-not-allowed disabled:opacity-70",
+  loadMoreWrap: "mx-auto flex w-full max-w-[1160px] justify-center px-4 text-center md:px-8",
+  loadMoreButton: "min-h-11 cursor-pointer rounded-lg border-0 bg-brand-green px-6 font-extrabold text-white disabled:cursor-not-allowed disabled:opacity-70",
 };
 
 export function ProductList({ userName, userGroup }: ProductListProps) {
@@ -51,38 +56,36 @@ export function ProductList({ userName, userGroup }: ProductListProps) {
     setSearch,
     sort,
     setSort,
-    page,
-    setPage,
+    visibleCount,
+    setVisibleCount,
     isLoading,
     isFetching,
     error,
+    refetch,
   } = useProducts();
-  const [favoriteCodes, setFavoriteCodes] = useState<string[]>([]);
-  const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
-  const [favoritesLoaded, setFavoritesLoaded] = useState(false);
+  const favoriteCodes = useFavoritesStore((state) => state.favoriteCodes);
+  const showFavoritesOnly = useFavoritesStore((state) => state.showFavoritesOnly);
+  const toggleFavorite = useFavoritesStore((state) => state.toggleFavorite);
+  const setShowFavoritesOnly = useFavoritesStore((state) => state.setShowFavoritesOnly);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
+
+  const handleLogout = useCallback(async () => {
+    await fetch("/api/auth/logout", {
+      method: "POST",
+    });
+
+    router.replace("/login");
+    router.refresh();
+  }, [router]);
 
   useEffect(() => {
-    const storedFavorites = window.localStorage.getItem(FAVORITES_STORAGE_KEY);
-
-    if (storedFavorites) {
-      try {
-        setFavoriteCodes(JSON.parse(storedFavorites) as string[]);
-      } catch {
-        setFavoriteCodes([]);
-      }
-    }
-
-    setFavoritesLoaded(true);
-  }, []);
-
-  useEffect(() => {
-    if (!favoritesLoaded) {
+    if (!(error instanceof UnauthorizedError)) {
       return;
     }
 
-    window.localStorage.setItem(FAVORITES_STORAGE_KEY, JSON.stringify(favoriteCodes));
-  }, [favoriteCodes, favoritesLoaded]);
+    void handleLogout();
+  }, [error, handleLogout]);
 
   const filteredProducts = useMemo(() => {
     if (!showFavoritesOnly) {
@@ -91,37 +94,19 @@ export function ProductList({ userName, userGroup }: ProductListProps) {
 
     return products.filter((product) => favoriteCodes.includes(product.codigo));
   }, [favoriteCodes, products, showFavoritesOnly]);
-  const totalPages = Math.max(1, Math.ceil(filteredProducts.length / PAGE_SIZE));
-  const pageNumbers = Array.from({ length: totalPages }, (_, index) => index + 1);
-  const visibleProducts = filteredProducts.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
+  const visibleProducts = filteredProducts.slice(0, visibleCount);
+  const hasMoreProducts = visibleProducts.length < filteredProducts.length;
 
   useEffect(() => {
-    setPage(1);
-  }, [setPage, showFavoritesOnly]);
+    setVisibleCount(PAGE_SIZE);
+  }, [setVisibleCount, showFavoritesOnly]);
 
-  useEffect(() => {
-    if (page > totalPages) {
-      setPage(totalPages);
-    }
-  }, [page, setPage, totalPages]);
-
-  function toggleFavorite(productCode: string) {
-    setFavoriteCodes((current) => {
-      if (current.includes(productCode)) {
-        return current.filter((code) => code !== productCode);
-      }
-
-      return [...current, productCode];
-    });
-  }
-
-  async function handleLogout() {
-    await fetch("/api/auth/logout", {
-      method: "POST",
-    });
-
-    router.replace("/login");
-    router.refresh();
+  function handleLoadMore() {
+    setIsLoadingMore(true);
+    window.setTimeout(() => {
+      setVisibleCount((current) => current + PAGE_SIZE);
+      setIsLoadingMore(false);
+    }, 250);
   }
 
   return (
@@ -130,7 +115,7 @@ export function ProductList({ userName, userGroup }: ProductListProps) {
         userName={userName}
         userGroup={userGroup}
         favoritesCount={favoriteCodes.length}
-        onFavoritesClick={() => setShowFavoritesOnly((current) => !current)}
+        onFavoritesClick={() => setShowFavoritesOnly(!showFavoritesOnly)}
         onUserClick={handleLogout}
       />
 
@@ -185,13 +170,22 @@ export function ProductList({ userName, userGroup }: ProductListProps) {
 
       {error ? (
         <div className={styles.errorState}>
-          {error}
+          {error instanceof Error ? error.message : "Não foi possível carregar os produtos."}
+          <br />
+          <button
+            className={styles.errorButton}
+            type="button"
+            disabled={isFetching}
+            onClick={() => void refetch()}
+          >
+            {isFetching ? "Tentando..." : "Tentar novamente"}
+          </button>
         </div>
       ) : null}
 
       {isLoading ? (
         <section className={styles.grid} aria-label="Carregando produtos">
-          {Array.from({ length: 10 }).map((_, index) => (
+          {Array.from({ length: PAGE_SIZE }).map((_, index) => (
             <ProductSkeleton key={index} />
           ))}
         </section>
@@ -217,24 +211,22 @@ export function ProductList({ userName, userGroup }: ProductListProps) {
             ))}
           </section>
 
-          <nav className={styles.pagination} aria-label="Paginação de produtos">
-            {pageNumbers.map((pageNumber) => (
+          {hasMoreProducts ? (
+            <div className={styles.loadMoreWrap}>
               <button
-                key={pageNumber}
+                className={styles.loadMoreButton}
                 type="button"
-                className={`${styles.pageButton} ${pageNumber === page ? styles.pageButtonActive : styles.pageButtonIdle}`}
-                aria-label={`Ir para página ${pageNumber}`}
-                aria-current={pageNumber === page ? "page" : undefined}
-                onClick={() => setPage(pageNumber)}
+                disabled={isLoadingMore}
+                onClick={handleLoadMore}
               >
-                {pageNumber}
+                {isLoadingMore ? "Carregando..." : "Carregar mais"}
               </button>
-            ))}
-          </nav>
+            </div>
+          ) : null}
         </>
       ) : null}
 
-      {isFetching && !isLoading ? (
+      {(isFetching && !isLoading) || isLoadingMore ? (
         <div className={styles.state}>
           Atualizando produtos...
         </div>

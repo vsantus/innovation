@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 
-import { AUTH_COOKIE_NAME, AUTH_USER_COOKIE_NAME } from "@/lib/auth";
+import { AUTH_COOKIE_NAME, AUTH_COOKIE_SECURE, AUTH_USER_COOKIE_NAME } from "@/lib/auth";
 
 export async function POST() {
   const response = NextResponse.json({ status: 1 });
@@ -10,7 +10,7 @@ export async function POST() {
     value: "",
     httpOnly: true,
     sameSite: "lax",
-    secure: process.env.NODE_ENV === "production",
+    secure: AUTH_COOKIE_SECURE,
     path: "/",
     maxAge: 0,
   });
@@ -20,7 +20,7 @@ export async function POST() {
     value: "",
     httpOnly: true,
     sameSite: "lax",
-    secure: process.env.NODE_ENV === "production",
+    secure: AUTH_COOKIE_SECURE,
     path: "/",
     maxAge: 0,
   });

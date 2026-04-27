@@ -113,7 +113,7 @@ export function ProductModal({ product, isOpen, onClose }: ProductModalProps) {
             </h2>
           </div>
           <button className={styles.close} type="button" onClick={onClose}>
-            X
+            Fechar
           </button>
         </header>
 
