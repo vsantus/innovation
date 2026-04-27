@@ -105,4 +105,4 @@ npm run test:e2e  # smoke E2E com Playwright
 - Docker run validado com sucesso em `http://localhost:3000/login`.
 - Lighthouse login: [`src/assets/lighthouse/login.jpeg`](src/assets/lighthouse/login.jpeg).
 - Lighthouse produtos: [`src/assets/lighthouse/produtos.png`](src/assets/lighthouse/produtos.png).
-- Video do fluxo login -> produtos: [`src/assets/fluxo/fluxo.mp4`](src/assets/fluxo/fluxo.mp4).
+- Video do fluxo login -> produtos: [`src/assets/fluxo/fluxo.mp4`](src/assets/fluxo/fluxo.gif).
