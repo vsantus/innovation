@@ -1,0 +1,15 @@
+.git
+.next
+node_modules
+npm-debug.log*
+
+.env
+.env*.local
+
+test-results
+playwright-report
+coverage
+.tmp
+
+Dockerfile
+README.md
